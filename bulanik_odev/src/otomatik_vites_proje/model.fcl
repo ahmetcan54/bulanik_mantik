@@ -1,0 +1,206 @@
+FUNCTION_BLOCK model
+
+VAR_INPUT
+	arac_yuku : REAL;
+	motor_devri : REAL;
+	yol_egimi : REAL;
+END_VAR
+
+VAR_OUTPUT
+	vites_degisimi : REAL;
+END_VAR
+
+FUZZIFY arac_yuku
+	TERM hafif := (0,1)(100,1)(200,0);
+	TERM orta := (150,0)(250,1)(350,0);
+	TERM agir := TRAPE 300 400 500 500;
+END_FUZZIFY
+
+FUZZIFY motor_devri
+	TERM dusuk := (0,1)(1000,1)(2000,0);
+	TERM orta := (1500,0)(2750,1)(4000,0);
+	TERM yuksek := (3500,0)(4750,1)(6000,0);
+	TERM cok_yuksek := TRAPE 5500 6500 7000 7000;
+END_FUZZIFY
+
+FUZZIFY yol_egimi
+	TERM inis := (-15,1)(-6,1)(-1,0);
+	TERM duz := (-4,0)(0,1)(4,0);
+	TERM yokus := TRAPE 1 6 15 15;
+END_FUZZIFY
+
+DEFUZZIFY vites_degisimi
+	TERM azalt := (-1,1)(-0.7,1)(-0.3,0);
+	TERM sabit := (-0.4,0)(0,1)(0.4,0);
+	TERM arttir := TRAPE 0.3 0.7 1 1;
+	METHOD : MM;
+	DEFAULT := 0;
+END_DEFUZZIFY
+
+RULEBLOCK blok
+
+    AND : MIN;
+    ACT : MIN;
+    ACCU : MAX;
+
+
+    (* MOTOR DEVRI: DUSUK *)
+
+    RULE 1 :
+    IF motor_devri IS dusuk AND yol_egimi IS inis AND arac_yuku IS hafif
+    THEN vites_degisimi IS sabit;
+
+    RULE 2 :
+    IF motor_devri IS dusuk AND yol_egimi IS inis AND arac_yuku IS orta
+    THEN vites_degisimi IS azalt;
+
+    RULE 3 :
+    IF motor_devri IS dusuk AND yol_egimi IS inis AND arac_yuku IS agir
+    THEN vites_degisimi IS azalt;
+
+    RULE 4 :
+    IF motor_devri IS dusuk AND yol_egimi IS duz AND arac_yuku IS hafif
+    THEN vites_degisimi IS sabit;
+
+    RULE 5 :
+    IF motor_devri IS dusuk AND yol_egimi IS duz AND arac_yuku IS orta
+    THEN vites_degisimi IS sabit;
+
+    RULE 6 :
+    IF motor_devri IS dusuk AND yol_egimi IS duz AND arac_yuku IS agir
+    THEN vites_degisimi IS azalt;
+
+    RULE 7 :
+    IF motor_devri IS dusuk AND yol_egimi IS yokus AND arac_yuku IS hafif
+    THEN vites_degisimi IS azalt;
+
+    RULE 8 :
+    IF motor_devri IS dusuk AND yol_egimi IS yokus AND arac_yuku IS orta
+    THEN vites_degisimi IS azalt;
+
+    RULE 9 :
+    IF motor_devri IS dusuk AND yol_egimi IS yokus AND arac_yuku IS agir
+    THEN vites_degisimi IS azalt;
+
+
+    (* MOTOR DEVRI: ORTA *)
+
+    RULE 10 :
+    IF motor_devri IS orta AND yol_egimi IS inis AND arac_yuku IS hafif
+    THEN vites_degisimi IS sabit;
+
+    RULE 11 :
+    IF motor_devri IS orta AND yol_egimi IS inis AND arac_yuku IS orta
+    THEN vites_degisimi IS sabit;
+
+    RULE 12 :
+    IF motor_devri IS orta AND yol_egimi IS inis AND arac_yuku IS agir
+    THEN vites_degisimi IS azalt;
+
+    RULE 13 :
+    IF motor_devri IS orta AND yol_egimi IS duz AND arac_yuku IS hafif
+    THEN vites_degisimi IS sabit;
+
+    RULE 14 :
+    IF motor_devri IS orta AND yol_egimi IS duz AND arac_yuku IS orta
+    THEN vites_degisimi IS sabit;
+
+    RULE 15 :
+    IF motor_devri IS orta AND yol_egimi IS duz AND arac_yuku IS agir
+    THEN vites_degisimi IS sabit;
+
+    RULE 16 :
+    IF motor_devri IS orta AND yol_egimi IS yokus AND arac_yuku IS hafif
+    THEN vites_degisimi IS sabit;
+
+    RULE 17 :
+    IF motor_devri IS orta AND yol_egimi IS yokus AND arac_yuku IS orta
+    THEN vites_degisimi IS sabit;
+
+    RULE 18 :
+    IF motor_devri IS orta AND yol_egimi IS yokus AND arac_yuku IS agir
+    THEN vites_degisimi IS azalt;
+
+
+    (* MOTOR DEVRI: YUKSEK *)
+
+    RULE 19 :
+    IF motor_devri IS yuksek AND yol_egimi IS inis AND arac_yuku IS hafif
+    THEN vites_degisimi IS arttir;
+
+    RULE 20 :
+    IF motor_devri IS yuksek AND yol_egimi IS inis AND arac_yuku IS orta
+    THEN vites_degisimi IS sabit;
+
+    RULE 21 :
+    IF motor_devri IS yuksek AND yol_egimi IS inis AND arac_yuku IS agir
+    THEN vites_degisimi IS sabit;
+
+    RULE 22 :
+    IF motor_devri IS yuksek AND yol_egimi IS duz AND arac_yuku IS hafif
+    THEN vites_degisimi IS arttir;
+
+    RULE 23 :
+    IF motor_devri IS yuksek AND yol_egimi IS duz AND arac_yuku IS orta
+    THEN vites_degisimi IS arttir;
+
+    RULE 24 :
+    IF motor_devri IS yuksek AND yol_egimi IS duz AND arac_yuku IS agir
+    THEN vites_degisimi IS arttir;
+
+    RULE 25 :
+    IF motor_devri IS yuksek AND yol_egimi IS yokus AND arac_yuku IS hafif
+    THEN vites_degisimi IS arttir;
+
+    RULE 26 :
+    IF motor_devri IS yuksek AND yol_egimi IS yokus AND arac_yuku IS orta
+    THEN vites_degisimi IS sabit;
+
+    RULE 27 :
+    IF motor_devri IS yuksek AND yol_egimi IS yokus AND arac_yuku IS agir
+    THEN vites_degisimi IS sabit;
+
+
+    (* MOTOR DEVRI: COK YUKSEK *)
+
+    RULE 28 :
+    IF motor_devri IS cok_yuksek AND yol_egimi IS inis AND arac_yuku IS hafif
+    THEN vites_degisimi IS arttir;
+
+    RULE 29 :
+    IF motor_devri IS cok_yuksek AND yol_egimi IS inis AND arac_yuku IS orta
+    THEN vites_degisimi IS arttir;
+
+    RULE 30 :
+    IF motor_devri IS cok_yuksek AND yol_egimi IS inis AND arac_yuku IS agir
+    THEN vites_degisimi IS arttir;
+
+    RULE 31 :
+    IF motor_devri IS cok_yuksek AND yol_egimi IS duz AND arac_yuku IS hafif
+    THEN vites_degisimi IS arttir;
+
+    RULE 32 :
+    IF motor_devri IS cok_yuksek AND yol_egimi IS duz AND arac_yuku IS orta
+    THEN vites_degisimi IS arttir;
+
+    RULE 33 :
+    IF motor_devri IS cok_yuksek AND yol_egimi IS duz AND arac_yuku IS agir
+    THEN vites_degisimi IS arttir;
+
+    RULE 34 :
+    IF motor_devri IS cok_yuksek AND yol_egimi IS yokus AND arac_yuku IS hafif
+    THEN vites_degisimi IS arttir;
+
+    RULE 35 :
+    IF motor_devri IS cok_yuksek AND yol_egimi IS yokus AND arac_yuku IS orta
+    THEN vites_degisimi IS arttir;
+
+    RULE 36 :
+    IF motor_devri IS cok_yuksek AND yol_egimi IS yokus AND arac_yuku IS agir
+    THEN vites_degisimi IS arttir;
+
+
+END_RULEBLOCK
+
+
+END_FUNCTION_BLOCK
